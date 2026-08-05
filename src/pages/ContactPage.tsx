@@ -1,5 +1,6 @@
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { submitContactForm } from "../lib/contactApi";
 
 export default function ContactPage() {
 
@@ -9,8 +10,10 @@ const [email,setEmail]=useState("");
 const [requirement,setRequirement]=useState("");
 const [message,setMessage]=useState("");
 const [errors,setErrors]=useState<{name?:string,email?:string,phone?:string,requirement?:string,message?:string}>({});
+const [status,setStatus]=useState<"idle"|"submitting"|"success"|"error">("idle");
+const [statusMessage,setStatusMessage]=useState("");
 
-const handleSubmit=(e:any)=>{
+const handleSubmit=async(e:any)=>{
 
 e.preventDefault();
 
@@ -43,7 +46,30 @@ newErrors.message="Message is required";
 setErrors(newErrors);
 
 if(Object.keys(newErrors).length===0){
-alert("Inquiry submitted successfully!");
+setStatus("submitting");
+setStatusMessage("");
+
+const result=await submitContactForm({
+name,
+email,
+phone,
+service:requirement,
+message,
+source:"Contact Page",
+});
+
+if(result.success){
+setStatus("success");
+setStatusMessage(result.message);
+setName("");
+setPhone("");
+setEmail("");
+setRequirement("");
+setMessage("");
+}else{
+setStatus("error");
+setStatusMessage(result.message);
+}
 }
 
 };
@@ -205,8 +231,27 @@ className="w-full p-4 bg-navy/5 border border-navy/10 focus:border-gold outline-
 </div>
 
 
-<button className="w-full py-4 gold-gradient text-navy font-bold tracking-widest hover:scale-[1.02] transition-transform">
-SUBMIT INQUIRY
+{status==="success" && (
+<div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 text-green-800 text-sm">
+<CheckCircle2 className="shrink-0 mt-0.5" size={18}/>
+<span>{statusMessage}</span>
+</div>
+)}
+
+{status==="error" && (
+<div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 text-red-700 text-sm">
+<AlertCircle className="shrink-0 mt-0.5" size={18}/>
+<span>{statusMessage}</span>
+</div>
+)}
+
+<button
+type="submit"
+disabled={status==="submitting"}
+className="w-full py-4 gold-gradient text-navy font-bold tracking-widest hover:scale-[1.02] transition-transform disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+>
+{status==="submitting" && <Loader2 className="animate-spin" size={18}/>}
+{status==="submitting" ? "SUBMITTING..." : "SUBMIT INQUIRY"}
 </button>
 
 </form>

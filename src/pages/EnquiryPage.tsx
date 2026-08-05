@@ -1,5 +1,6 @@
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { submitContactForm } from "../lib/contactApi";
 
 type FormDataType = {
   name: string;
@@ -14,6 +15,7 @@ type ErrorsType = {
   name?: string;
   email?: string;
   phone?: string;
+  enquiry?: string;
   message?: string;
 };
 
@@ -29,6 +31,8 @@ export default function EnquiryPage() {
   });
 
   const [errors, setErrors] = useState<ErrorsType>({});
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [statusMessage, setStatusMessage] = useState("");
 
   const handleChange = (
   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -58,6 +62,10 @@ export default function EnquiryPage() {
       newErrors.phone = "Enter valid 10 digit phone number";
     }
 
+    if (!formData.enquiry.trim()) {
+      newErrors.enquiry = "Please select an enquiry type";
+    }
+
     if (!formData.message.trim()) {
       newErrors.message = "Message is required";
     }
@@ -66,20 +74,39 @@ export default function EnquiryPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (validate()) {
-      alert("Enquiry submitted successfully!");
+      setStatus("submitting");
+      setStatusMessage("");
 
-      setFormData({
-        name: "",
-        company: "",
-        email: "",
-        phone: "",
-        enquiry: "",
-        message: ""
+      const result = await submitContactForm({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        service: formData.enquiry || "General Enquiry",
+        message: formData.message,
+        source: "Enquiry Page",
       });
+
+      if (result.success) {
+        setStatus("success");
+        setStatusMessage(result.message);
+
+        setFormData({
+          name: "",
+          company: "",
+          email: "",
+          phone: "",
+          enquiry: "",
+          message: ""
+        });
+      } else {
+        setStatus("error");
+        setStatusMessage(result.message);
+      }
     }
   };
 
@@ -282,6 +309,7 @@ export default function EnquiryPage() {
                   onChange={handleChange}
                   className="w-full border border-navy/20 p-3 focus:outline-none focus:border-gold"
                 >
+                  <option value="">Select Enquiry Type</option>
                   <option value="Project Partnership">Project Partnership</option>
                   <option value="Government Tender">Government Tender</option>
                   <option value="Vendor Registration">Vendor Registration</option>
@@ -289,6 +317,10 @@ export default function EnquiryPage() {
                   <option value="Career / HR">Career / HR</option>
                   <option value="General Enquiry">General Enquiry</option>
                 </select>
+
+                {errors.enquiry && (
+                  <p className="text-red-500 text-sm mt-1">{errors.enquiry}</p>
+                )}
 
               </div>
 
@@ -315,14 +347,37 @@ export default function EnquiryPage() {
               </div>
 
 
+              {/* STATUS */}
+
+              {status === "success" && (
+                <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 text-green-800 text-sm">
+                  <CheckCircle2 className="shrink-0 mt-0.5" size={18} />
+                  <span>{statusMessage}</span>
+                </div>
+              )}
+
+              {status === "error" && (
+                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 text-red-700 text-sm">
+                  <AlertCircle className="shrink-0 mt-0.5" size={18} />
+                  <span>{statusMessage}</span>
+                </div>
+              )}
+
               {/* SUBMIT */}
 
               <button
                 type="submit"
-                className="gold-gradient px-8 py-4 font-bold text-navy flex items-center justify-center"
+                disabled={status === "submitting"}
+                className="gold-gradient px-8 py-4 font-bold text-navy flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Submit Enquiry
-                <Send className="ml-2" size={18} />
+                {status === "submitting" ? (
+                  <Loader2 className="animate-spin" size={18} />
+                ) : (
+                  <>
+                    Submit Enquiry
+                    <Send className="ml-2" size={18} />
+                  </>
+                )}
               </button>
 
             </form>

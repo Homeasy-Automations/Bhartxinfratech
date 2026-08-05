@@ -212,7 +212,7 @@ Uttar Pradesh – 201309, India
 
 <div className="flex items-center">
 <Mail className="mr-3 text-gold shrink-0" size={18} />
-<p>contact@bharatxinfratech.com</p>
+<p>info@bharatxinfratech.com</p>
 </div>
 
 </div>

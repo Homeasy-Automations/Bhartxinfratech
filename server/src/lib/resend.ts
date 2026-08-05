@@ -22,4 +22,4 @@ export const resend = new Resend(apiKey ?? "missing-api-key");
  *   "BharatX Infratech <enquiries@bharatxinfratech.com>"
  */
 export const MAIL_FROM =
-  process.env.MAIL_FROM || "BharatX Infratech <onboarding@resend.dev>";
+  process.env.MAIL_FROM || "BharatX Infratech <noreply@bharatxinfratech.com>";

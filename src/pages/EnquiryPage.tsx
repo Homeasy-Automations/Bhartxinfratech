@@ -176,7 +176,7 @@ export default function EnquiryPage() {
               <div className="flex items-center">
                 <Mail className="text-gold mr-4" />
                 <span className="text-navy font-medium">
-                  contact@bharatxinfratech.com
+                  info@bharatxinfratech.com
                 </span>
               </div>
 

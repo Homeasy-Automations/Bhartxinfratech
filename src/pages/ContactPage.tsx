@@ -328,9 +328,9 @@ Email Channels
 </h4>
 
 <p className="text-navy/60">
-contact@bharatxinfratech.com
-<br/>
-tenders@bharatxinfratech.com
+info@bharatxinfratech.com
+{/* <br/>
+tenders@bharatxinfratech.com */}
 </p>
 </div>
 

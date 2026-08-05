@@ -101,7 +101,7 @@ export function renderEmailShell({
                       <strong style="color:${INK};">${escapeHtml(COMPANY_NAME)}</strong><br/>
                       9th Floor, Logix Cyberpark, Tower-C, Sector 62, Noida, Uttar Pradesh &ndash; 201309, India<br/>
                       +91 98112 63046 &nbsp;&bull;&nbsp;
-                      <a href="mailto:contact@bharatxinfratech.com" style="color:${GOLD_LIGHT}; text-decoration:none;">contact@bharatxinfratech.com</a>
+                      <a href="mailto:info@bharatxinfratech.com" style="color:${GOLD_LIGHT}; text-decoration:none;">info@bharatxinfratech.com</a>
                     </td>
                   </tr>
                   <tr>

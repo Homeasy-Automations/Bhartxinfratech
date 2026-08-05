@@ -106,7 +106,7 @@ export function renderEmailShell({
                   </tr>
                   <tr>
                     <td style="padding-top:14px; font-family:'Segoe UI', Helvetica, Arial, sans-serif; color:#9CA3AF; font-size:11px;">
-                      This is an automated message from the ${escapeHtml(COMPANY_NAME)} website.
+                      This is an automated message from the ${escapeHtml(COMPANY_NAME)}.
                     </td>
                   </tr>
                 </table>
